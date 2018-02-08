@@ -140,6 +140,9 @@ var tests = {
 
             var rad = zipcodes.radius(95014, 50, true);
             assert.equal(rad.length, 387);
+            rad.sort(function(a,b) {
+                return a.zip < b.zip ? -1 : 1;
+            });
             assert.deepEqual(rad[0], {
               zip: '93901',
               latitude: 36.6677,
@@ -148,6 +151,16 @@ var tests = {
               state: 'CA',
               country: 'US'
           });
+        },
+        'should be reasonably fast': function() {
+            // this previously took 90 seconds on my machine, and now it takes about 0.5 seconds
+            // the test will fail if it takes over 3 seconds.
+            var startTime = new Date().getTime();
+            var nyZips = zipcodes.lookupByState('NY');
+            for (var i = 0; i < nyZips.length; i++) {
+                zipcodes.radius(nyZips[i].zip, 20);
+            }
+            assert(new Date().getTime() - startTime < 3000);
         }
     }
 };

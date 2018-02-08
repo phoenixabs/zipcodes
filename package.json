@@ -18,5 +18,8 @@
   "devDependencies": {
     "istanbul": "~0.3.13",
     "vows": "^0.8.1"
+  },
+  "dependencies": {
+    "geohash-area": "0.0.1"
   }
 }
