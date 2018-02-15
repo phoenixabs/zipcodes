@@ -44,6 +44,7 @@ data.forEach(function(line, num) {
         var o = {};
 
         o.zip = clean(line[1]);
+        o.type = clean(line[2]);
         if (geonamesLookupData[o.zip] !== undefined) {
             o.latitude = Number(clean(geonamesLookupData[o.zip].latitude));
             o.longitude = Number(clean(geonamesLookupData[o.zip].longitude));
@@ -71,7 +72,7 @@ for (var i in zips) {
     stateMap[item.state].push(item.zip);
 }
 
-str = 'exports.codes = ' + JSON.stringify(zips) + ';\n';
-str += 'exports.stateMap = ' + JSON.stringify(stateMap) + ';\n';
+str = 'exports.codes = ' + JSON.stringify(zips,null,'\t') + ';\n';
+str += 'exports.stateMap = ' + JSON.stringify(stateMap,null,'\t') + ';\n';
 
 fs.writeFileSync(path.join('../', 'lib', 'codes.js'), str, 'utf8');
