@@ -133,13 +133,13 @@ var tests = {
         },
         'should find': function() {
             var rad = zipcodes.radius(62959, 20);
-            assert.equal(rad.length, 38);
+            assert.equal(rad.length, 44);
 
             var rad = zipcodes.radius(95014, 50);
-            assert.equal(rad.length, 387);
+            assert.equal(rad.length, 399);
 
             var rad = zipcodes.radius(95014, 50, true);
-            assert.equal(rad.length, 387);
+            assert.equal(rad.length, 399);
             rad.sort(function(a,b) {
                 return a.zip < b.zip ? -1 : 1;
             });
@@ -147,8 +147,10 @@ var tests = {
               zip: '93901',
               latitude: 36.6677,
               longitude: -121.6596,
+              approximateRadius: 1.913,
               city: 'Salinas',
               state: 'CA',
+              type: 'STANDARD',
               country: 'US'
           });
         },

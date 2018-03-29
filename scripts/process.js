@@ -5,7 +5,8 @@ var fs = require('fs'),
     zips = {},
     str,
     data = fs.readFileSync('./free-zipcode-database.csv', 'utf8').replace(/\r/g, '').split('\n'),
-    geonamesData = fs.readFileSync('./US.txt', 'utf8').split('\n');
+    geonamesData = fs.readFileSync('./US.txt', 'utf8').split('\n'),
+    zctaData = fs.readFileSync('./zcta2010.csv', 'utf8').replace(/\r/g, '').split('\n');
 
 data.shift();
 
@@ -61,7 +62,18 @@ data.forEach(function(line, num) {
     }
 });
 
-
+zctaData.forEach(function(line, num) {
+    line = line.split(','); // the first 5 columns don't have commas in them so this is okay
+    if (line.length > 5) {
+        let zipcode = line[0];
+        let zipInfo = zips[zipcode];
+        if (zipInfo.latitude && zipInfo.longitude) {
+            let totalSquareMiles = Number(line[3]) + Number(line[4]);
+            let approximateRadius = Math.sqrt(totalSquareMiles) / 2;
+            zipInfo.approximateRadius = +approximateRadius.toFixed(3);
+        }
+    }
+})
 
 var stateMap = {};
 

@@ -28,6 +28,11 @@ if [ ! -f ./US.txt ]; then
     $unzip -oq "US.zip" "US.txt"
 fi
 
+if [ ! -f ./zcta2010.csv ]; then
+    echo "Fetching Zip Sizes"
+    $wget -nv "http://proximityone.com/countytrends/zcta2010.csv" --user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36"
+fi
+
 
 wait
 
@@ -38,6 +43,7 @@ echo "Processing CSV file."
 wait
 
 rm ./free-zipcode-database.csv
+rm ./zcta2010.csv
 rm ./US.zip*
 rm ./US.txt
 
