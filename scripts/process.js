@@ -6,7 +6,8 @@ var fs = require('fs'),
     str,
     data = fs.readFileSync('./free-zipcode-database.csv', 'utf8').replace(/\r/g, '').split('\n'),
     geonamesData = fs.readFileSync('./US.txt', 'utf8').split('\n'),
-    zctaData = fs.readFileSync('./zcta2010.csv', 'utf8').replace(/\r/g, '').split('\n');
+    zctaData = fs.readFileSync('./zcta2010.csv', 'utf8').replace(/\r/g, '').split('\n'),
+    zctaCountyData = fs.readFileSync('./zcta_county_rel_10.txt', 'utf8').replace(/\r/g, '').split('\n');
 
 data.shift();
 
@@ -74,6 +75,18 @@ zctaData.forEach(function(line, num) {
         }
     }
 })
+
+zctaCountyData.forEach(function(line, num) {
+    line = line.split(',');
+    if (line.length >= 3 && num >= 1) {
+        let zipcode = line[0];
+        let zipInfo = zips[zipcode];
+        if (zipInfo) {
+            zipInfo.stateCode = +line[1];
+            zipInfo.countyCode = +line[2];
+        }
+    }
+});
 
 var stateMap = {};
 

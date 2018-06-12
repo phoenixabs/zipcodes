@@ -33,6 +33,11 @@ if [ ! -f ./zcta2010.csv ]; then
     $wget -nv "http://proximityone.com/countytrends/zcta2010.csv" --user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36"
 fi
 
+if [ ! -f ./zcta_county_rel_10.txt ]; then
+    echo "Fetching County Codes"
+    $wget -nv "https://www2.census.gov/geo/docs/maps-data/data/rel/zcta_county_rel_10.txt"
+fi
+
 
 wait
 
@@ -44,6 +49,7 @@ wait
 
 rm ./free-zipcode-database.csv
 rm ./zcta2010.csv
+rm ./zcta_county_rel_10.txt
 rm ./US.zip*
 rm ./US.txt
 
