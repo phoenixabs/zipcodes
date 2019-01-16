@@ -11,11 +11,9 @@ var tests = {
             return zipcodes;
         },
         'a functions and objects': function(d) {
-            ['lookup','lookupByName','distance','radius','toMiles','toKilometers'].forEach(function(key) {
+            ['lookup','lookupByName','distance','radius','toMiles','toKilometers','codes','states'].forEach(function(key) {
                 assert.isFunction(d[key]);
             });
-            assert.isObject(d.codes);
-            assert.isObject(d.states);
         }
     },
     'Marion': {
