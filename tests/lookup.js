@@ -151,7 +151,9 @@ var tests = {
               city: 'Salinas',
               state: 'CA',
               type: 'STANDARD',
-              country: 'US'
+              country: 'US',
+              stateCode: 6,
+              countyCode: 53
           });
         },
         'should be reasonably fast': function() {
