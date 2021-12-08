@@ -5,7 +5,9 @@ var fs = require('fs'),
     zips = {},
     str,
     data = fs.readFileSync('./free-zipcode-database.csv', 'utf8').replace(/\r/g, '').split('\n'),
-    geonamesData = fs.readFileSync('./US.txt', 'utf8').split('\n');
+    geonamesData = fs.readFileSync('./US.txt', 'utf8').split('\n'),
+    zctaData = fs.readFileSync('./zcta2010.csv', 'utf8').replace(/\r/g, '').split('\n'),
+    zctaCountyData = fs.readFileSync('./zcta_county_rel_10.txt', 'utf8').replace(/\r/g, '').split('\n');
 
 data.shift();
 
@@ -44,6 +46,7 @@ data.forEach(function(line, num) {
         var o = {};
 
         o.zip = clean(line[1]);
+        o.type = clean(line[2]);
         if (geonamesLookupData[o.zip] !== undefined) {
             o.latitude = Number(clean(geonamesLookupData[o.zip].latitude));
             o.longitude = Number(clean(geonamesLookupData[o.zip].longitude));
@@ -60,7 +63,30 @@ data.forEach(function(line, num) {
     }
 });
 
+zctaData.forEach(function(line, num) {
+    line = line.split(','); // the first 5 columns don't have commas in them so this is okay
+    if (line.length > 5) {
+        let zipcode = line[0];
+        let zipInfo = zips[zipcode];
+        if (zipInfo.latitude && zipInfo.longitude) {
+            let totalSquareMiles = Number(line[3]) + Number(line[4]);
+            let approximateRadius = Math.sqrt(totalSquareMiles) / 2;
+            zipInfo.approximateRadius = +approximateRadius.toFixed(3);
+        }
+    }
+})
 
+zctaCountyData.forEach(function(line, num) {
+    line = line.split(',');
+    if (line.length >= 3 && num >= 1) {
+        let zipcode = line[0];
+        let zipInfo = zips[zipcode];
+        if (zipInfo) {
+            zipInfo.stateCode = +line[1];
+            zipInfo.countyCode = +line[2];
+        }
+    }
+});
 
 var stateMap = {};
 
@@ -71,7 +97,7 @@ for (var i in zips) {
     stateMap[item.state].push(item.zip);
 }
 
-str = 'exports.codes = ' + JSON.stringify(zips) + ';\n';
-str += 'exports.stateMap = ' + JSON.stringify(stateMap) + ';\n';
+str = 'exports.codes = ' + JSON.stringify(zips,null,'\t') + ';\n';
+str += 'exports.stateMap = ' + JSON.stringify(stateMap,null,'\t') + ';\n';
 
 fs.writeFileSync(path.join('../', 'lib', 'codes.js'), str, 'utf8');

@@ -133,21 +133,38 @@ var tests = {
         },
         'should find': function() {
             var rad = zipcodes.radius(62959, 20);
-            assert.equal(rad.length, 38);
+            assert.equal(rad.length, 44);
 
             var rad = zipcodes.radius(95014, 50);
-            assert.equal(rad.length, 387);
+            assert.equal(rad.length, 399);
 
             var rad = zipcodes.radius(95014, 50, true);
-            assert.equal(rad.length, 387);
+            assert.equal(rad.length, 399);
+            rad.sort(function(a,b) {
+                return a.zip < b.zip ? -1 : 1;
+            });
             assert.deepEqual(rad[0], {
               zip: '93901',
               latitude: 36.6677,
               longitude: -121.6596,
+              approximateRadius: 1.913,
               city: 'Salinas',
               state: 'CA',
-              country: 'US'
+              type: 'STANDARD',
+              country: 'US',
+              stateCode: 6,
+              countyCode: 53
           });
+        },
+        'should be reasonably fast': function() {
+            // this previously took 90 seconds on my machine, and now it takes about 0.5 seconds
+            // the test will fail if it takes over 3 seconds.
+            var startTime = new Date().getTime();
+            var nyZips = zipcodes.lookupByState('NY');
+            for (var i = 0; i < nyZips.length; i++) {
+                zipcodes.radius(nyZips[i].zip, 20);
+            }
+            assert(new Date().getTime() - startTime < 3000);
         }
     }
 };
