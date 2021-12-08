@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var fs = require('fs'),
+    fips = require('./fipsCode'),
     path = require('path'),
     zips = {},
     str,
@@ -56,6 +57,7 @@ data.forEach(function(line, num) {
         }
         o.city = ucfirst(clean(line[3]));
         o.state = clean(line[4]);
+        o.stateCode = fips[o.state];
         o.country = 'US';
         if (!zips[o.zip]) {
             zips[o.zip] = o;
@@ -82,7 +84,6 @@ zctaCountyData.forEach(function(line, num) {
         let zipcode = line[0];
         let zipInfo = zips[zipcode];
         if (zipInfo) {
-            zipInfo.stateCode = +line[1];
             zipInfo.countyCode = +line[2];
         }
     }
