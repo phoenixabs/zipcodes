@@ -85,6 +85,7 @@ zctaCountyData.forEach(function(line, num) {
         let zipcode = line[0];
         let zipInfo = zips[zipcode];
         if (zipInfo) {
+            zipInfo.stateCode = +line[1];
             zipInfo.countyCode = +line[2];
         }
     }
