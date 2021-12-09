@@ -2,6 +2,7 @@
 
 var fs = require('fs'),
     fips = require('./fipsCode'),
+    fipsCounty = require('./countyFips2012'),
     path = require('path'),
     zips = {},
     str,
@@ -45,7 +46,6 @@ data.forEach(function(line, num) {
     line = line.split(',');
     if (line.length > 1) {
         var o = {};
-
         o.zip = clean(line[1]);
         o.type = clean(line[2]);
         if (geonamesLookupData[o.zip] !== undefined) {
@@ -58,6 +58,7 @@ data.forEach(function(line, num) {
         o.city = ucfirst(clean(line[3]));
         o.state = clean(line[4]);
         o.stateCode = fips[o.state];
+        o.countyCode = fipsCounty[o.zip] && fipsCounty[o.zip][0].STCOUNTYFP;
         o.country = 'US';
         if (!zips[o.zip]) {
             zips[o.zip] = o;
