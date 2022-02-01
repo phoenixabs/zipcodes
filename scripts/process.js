@@ -73,7 +73,7 @@ data.forEach(function(line, num) {
         o.city = ucfirst(clean(line[3]));
         o.state = clean(line[4]);
         o.stateCode = fips[o.state];
-        o.countyCode = countyFipsObject[o.zip] && parseInt(countyFipsObject[o.zip][0].STCOUNTYFP);
+        o.countyCode = countyFipsObject[o.zip] && parseInt(countyFipsObject[o.zip][0].STCOUNTYFP.substring(2));
         o.country = 'US';
         if (!zips[o.zip]) {
             zips[o.zip] = o;
