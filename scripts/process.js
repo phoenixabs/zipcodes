@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 var fs = require('fs'),
+    fips = require('./fipsCode'),
+    fipsCounty = fs.readFileSync('../lib/countyFips2012.csv', 'utf8').replace(/\r/g, '').split('\n'),
     path = require('path'),
     zips = {},
     str,
@@ -10,6 +12,21 @@ var fs = require('fs'),
     zctaCountyData = fs.readFileSync('./zcta_county_rel_10.txt', 'utf8').replace(/\r/g, '').split('\n');
 
 data.shift();
+
+let countyFipsObject = {}
+
+let keys = fipsCounty[0].split(",")
+
+fipsCounty.forEach((value,index) => {
+  if (index < 1) return;
+  let splitLine = value.split(",");
+  countyFipsObject[splitLine[0]] = countyFipsObject[splitLine[0]] || [];
+  let pushedObject = {};
+  splitLine.forEach((d,i) => {
+    pushedObject[keys[i]] = d;
+  })
+  countyFipsObject[splitLine[0]].push(pushedObject)
+})
 
 var clean = function(str) {
     return str.replace(/"/g, '').trimLeft();
@@ -44,7 +61,6 @@ data.forEach(function(line, num) {
     line = line.split(',');
     if (line.length > 1) {
         var o = {};
-
         o.zip = clean(line[1]);
         o.type = clean(line[2]);
         if (geonamesLookupData[o.zip] !== undefined) {
@@ -56,6 +72,8 @@ data.forEach(function(line, num) {
         }
         o.city = ucfirst(clean(line[3]));
         o.state = clean(line[4]);
+        o.stateCode = fips[o.state];
+        o.countyCode = countyFipsObject[o.zip] && parseInt(countyFipsObject[o.zip][0].STCOUNTYFP.substring(2));
         o.country = 'US';
         if (!zips[o.zip]) {
             zips[o.zip] = o;
